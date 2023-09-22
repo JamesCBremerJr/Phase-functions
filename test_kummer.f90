@@ -7,73 +7,230 @@ use kummer
 
 implicit double precision (a-h,o-z)
 
-double precision :: dlambda
-
+double precision :: dnu
 
 contains
 
 
 
-subroutine legetayl(gamma,t,yt,ypt)
+! subroutine lege0(dnu,val,der)
+! implicit double precision (a-h,o-z)
+! !
+! !  Evaluate the Legendre function of the first kind of degree dnu
+! !  and its derivative at the point 0.
+! !
+! !  Input parameters:
+! !     dnu - the degree of the polynomial to evaluate
+! !
+! !  Output parameters:
+! !     val - the value of the polynomial at 0
+! !     der - the value of its derivative at 0 
+! !
+! data pi / 3.14159265358979323846264338327950288d0 /
+
+! val = 0
+! der = 0
+
+
+! cosval = cos(pi/2*dnu)
+! sinval = sin(pi/2*dnu)
+
+! ! Compute the ratio of gamma functions by brute force if n is small, and use an asymptotic
+! ! expansion if not.
+! gammaratio =  gamma(dnu/2+0.5d0)/gamma(dnu/2+1.0d0)
+
+
+! if (dnu .ge. 100) then
+! gammaratio = -0.104957025613225462481750387218029248d16/dnu**30-  &
+! 0.3435274821674695538341969877678682d13/dnu**29+  &
+! 0.137012508230061862467393693767518715d14/dnu**28+  &
+! 0.52184449177744945865946227168534838d11/dnu**27-  &
+! 0.20802210228419220675266715332806065d12/dnu**26-  &
+! 0.93358732709156442705307398873761416d9/dnu**25+  &
+! 0.37189644043206042515191168099049809d10/dnu**24+  &
+! 0.19959724959938103205809132306364276d8/dnu**23-  &
+! 0.79435712783055360854592176681049474d8/dnu**22-  &
+! 0.51897923979290808045377229245471765d6/dnu**21+  &
+! 0.20627383965581267895358219780481014d7/dnu**20+  &
+! 0.16766118747003365058835187265431109d5/dnu**19-  &
+! 0.66511566853934577951098546692891475d5/dnu**18-  &
+! 0.6912167061162564516424966534975484d3/dnu**17+  &
+! 0.27339931645089473537297049513979147d4/dnu**16+  &
+! 0.37638891605797570836668516338219077d2/dnu**15-  &
+! 0.14815719515134617540873450267244743d3/dnu**14-  &
+! 0.28341526372214554549138737809124132d1/dnu**13+  &
+! 0.11064038264157344432164622228873395d2/dnu**12+  &
+! 0.31450601605351481364931293755092798d0/dnu**11-  &
+! 0.12103480338672938011211980036999511d1/dnu**10-  &
+! 0.5638860579751321228004007809251394d-1/dnu**9+  &
+! 0.21215037666443619840288699752634574d0/dnu**8+  &
+! 0.18752313014255059774912529012118952d-1/dnu**7-  &
+! 0.6888076310874815972557053234370966d-1/dnu**6-  &
+! 0.14501213286052244152751691019728349d-1/dnu**5+  &
+! 0.5524271728019902534381596578944133d-1/dnu**4+  &
+! 0.4419417382415922027505277263155306d-1/dnu**3-  &
+! 0.3535533905932737622004221810524245d0/dnu**2+  &
+! 0.14142135623730950488016887242096981d1/dnu
+! gammaratio = gammaratio *sqrt(dnu)
+! endif
+
+! if (n .le. -100) then
+! dnu = -dnu
+! gammaratio = 0.104957025613225462481750387218029248d16/dnu**30-  &
+! 0.343527482167469553834196987767868205d13/dnu**29-  &
+! 0.137012508230061862467393693767518715d14/dnu**28+  &
+! 0.521844491777449458659462271685348384d11/dnu**27+  &
+! 0.208022102284192206752667153328060649d12/dnu**26-  &
+! 0.933587327091564427053073988737614164d9/dnu**25-  &
+! 0.37189644043206042515191168099049809d10/dnu**24+  &
+! 0.199597249599381032058091323063642763d8/dnu**23+  &
+! 0.794357127830553608545921766810494744d8/dnu**22-  &
+! 0.518979239792908080453772292454717655d6/dnu**21-  &
+! 0.206273839655812678953582197804810138d7/dnu**20+  &
+! 0.167661187470033650588351872654311091d5/dnu**19+  &
+! 0.66511566853934577951098546692891475d5/dnu**18-  &
+! 0.691216706116256451642496653497548362d3/dnu**17-  &
+! 0.273399316450894735372970495139791469d4/dnu**16+  &
+! 0.376388916057975708366685163382190772d2/dnu**15+  &
+! 0.148157195151346175408734502672447426d3/dnu**14-  &
+! 0.283415263722145545491387378091241324d1/dnu**13-  &
+! 0.110640382641573444321646222288733953d2/dnu**12+  &
+! 0.314506016053514813649312937550927984d0/dnu**11+  &
+! 0.121034803386729380112119800369995106d1/dnu**10-  &
+! 0.563886057975132122800400780925139408d-1/dnu**9-  &
+! 0.212150376664436198402886997526345737d0/dnu**8+  &
+! 0.187523130142550597749125290121189519d-1/dnu**7+  &
+! 0.688807631087481597255705323437096598d-1/dnu**6-  &
+! 0.145012132860522441527516910197283494d-1/dnu**5-  &
+! 0.552427172801990253438159657894413312d-1/dnu**4+  &
+! 0.44194173824159220275052772631553065d-1/dnu**3+  &
+! 0.35355339059327376220042218105242452d0/dnu**2+  &
+! 0.141421356237309504880168872420969808d1/dnu
+! gammaratio = -gammaratio*sqrt(dnu) * sinval/cosval
+
+! endif
+
+
+! val        = 1.0d0/sqrt(pi) * cosval * gammaratio
+! der        = 2.0d0/sqrt(pi) * sinval * 1.0d0/gammaratio
+
+! end subroutine
+
+
+subroutine legen0(n,val,der)
 implicit double precision (a-h,o-z)
-
+double precision    :: val, der
+real*16             :: pi, cosval,sinval, gammaratio,dnu
 !
-!  Approximate the function
+!  Evaluate the Legendre function of the first kind of integer degree n
+!  and its derivative at the point 0 to extended precision accuracy.
 !
-!       f(t) = \sqrt(sin(t)) P_gamma(cos(t)),
+!  Input parameters:
+!     dnu - the degree of the polynomial to evaluate
 !
-!  where P_\gamma is the Legendre function of the first kind of order gamma,
-!  and its derivative at a point a which is very close to 0 using third
-!  order Taylor expansions.
+!  Output parameters:
+!     val - the value of the polynomial at 0
+!     der - the value of its derivative at 0 
 !
+data pi / 3.14159265358979323846264338327950288d0 /
 
-yt = Sqrt(t) + (-0.08333333333333333 - gamma/4. - gamma**2/4.)*t**2.5 +  &
-(0.0006944444444444445 + gamma/96. + (5*gamma**2)/192. + gamma**3/32. + gamma**4/64.)*t**4.5 + &
-(-0.000041335978835978834 - gamma**2/2304. - gamma**3/768. - gamma**4/576. - gamma**5/768. &
-- gamma**6/2304.)*t**6.5
+val = 0
+der = 0
+dnu = n
+
+! Compute cosval = cos(pi/2 * dnu) and sinval = sin(pi/2*dnu)
 
 
-ypt=  1/(2.*Sqrt(t)) + (-0.20833333333333334 - (5*gamma)/8. - (5*gamma**2)/8.)*t**1.5 + &
-(0.003125 + (3*gamma)/64. + (15*gamma**2)/128. + (9*gamma**3)/64. + (9*gamma**4)/128.)*t**3.5 + &
- (-0.0002686838624338624 - (13*gamma**2)/4608. - (13*gamma**3)/1536. - (13*gamma**4)/1152. - &
-(13*gamma**5)/1536. - (13*gamma**6)/4608.)*t**5.5
+if ( mod(n,4) == 0) cosval=1
+if ( mod(n,4) == 1) cosval=0
+if ( mod(n,4) == 2) cosval=-1
+if ( mod(n,4) == 3) cosval=0
 
+if ( mod(n,4) == 0) sinval=0
+if ( mod(n,4) == 1) sinval=1
+if ( mod(n,4) == 2) sinval=0
+if ( mod(n,4) == 3) sinval=-1
+
+! Compute the ratio of gamma functions by brute force if n is small, and use an asymptotic
+! expansion if not.
+gammaratio =  gamma(dnu/2+0.5d0)/gamma(dnu/2+1.0d0)
+
+
+if (dnu .ge. 100) then
+gammaratio = -0.104957025613225462481750387218029248d16/dnu**30-  &
+0.3435274821674695538341969877678682d13/dnu**29+  &
+0.137012508230061862467393693767518715d14/dnu**28+  &
+0.52184449177744945865946227168534838d11/dnu**27-  &
+0.20802210228419220675266715332806065d12/dnu**26-  &
+0.93358732709156442705307398873761416d9/dnu**25+  &
+0.37189644043206042515191168099049809d10/dnu**24+  &
+0.19959724959938103205809132306364276d8/dnu**23-  &
+0.79435712783055360854592176681049474d8/dnu**22-  &
+0.51897923979290808045377229245471765d6/dnu**21+  &
+0.20627383965581267895358219780481014d7/dnu**20+  &
+0.16766118747003365058835187265431109d5/dnu**19-  &
+0.66511566853934577951098546692891475d5/dnu**18-  &
+0.6912167061162564516424966534975484d3/dnu**17+  &
+0.27339931645089473537297049513979147d4/dnu**16+  &
+0.37638891605797570836668516338219077d2/dnu**15-  &
+0.14815719515134617540873450267244743d3/dnu**14-  &
+0.28341526372214554549138737809124132d1/dnu**13+  &
+0.11064038264157344432164622228873395d2/dnu**12+  &
+0.31450601605351481364931293755092798d0/dnu**11-  &
+0.12103480338672938011211980036999511d1/dnu**10-  &
+0.5638860579751321228004007809251394d-1/dnu**9+  &
+0.21215037666443619840288699752634574d0/dnu**8+  &
+0.18752313014255059774912529012118952d-1/dnu**7-  &
+0.6888076310874815972557053234370966d-1/dnu**6-  &
+0.14501213286052244152751691019728349d-1/dnu**5+  &
+0.5524271728019902534381596578944133d-1/dnu**4+  &
+0.4419417382415922027505277263155306d-1/dnu**3-  &
+0.3535533905932737622004221810524245d0/dnu**2+  &
+0.14142135623730950488016887242096981d1/dnu
+gammaratio = gammaratio *sqrt(dnu)
+endif
+
+if (n .le. -100) then
+dnu = -dnu
+gammaratio = 0.104957025613225462481750387218029248d16/dnu**30-  &
+0.343527482167469553834196987767868205d13/dnu**29-  &
+0.137012508230061862467393693767518715d14/dnu**28+  &
+0.521844491777449458659462271685348384d11/dnu**27+  &
+0.208022102284192206752667153328060649d12/dnu**26-  &
+0.933587327091564427053073988737614164d9/dnu**25-  &
+0.37189644043206042515191168099049809d10/dnu**24+  &
+0.199597249599381032058091323063642763d8/dnu**23+  &
+0.794357127830553608545921766810494744d8/dnu**22-  &
+0.518979239792908080453772292454717655d6/dnu**21-  &
+0.206273839655812678953582197804810138d7/dnu**20+  &
+0.167661187470033650588351872654311091d5/dnu**19+  &
+0.66511566853934577951098546692891475d5/dnu**18-  &
+0.691216706116256451642496653497548362d3/dnu**17-  &
+0.273399316450894735372970495139791469d4/dnu**16+  &
+0.376388916057975708366685163382190772d2/dnu**15+  &
+0.148157195151346175408734502672447426d3/dnu**14-  &
+0.283415263722145545491387378091241324d1/dnu**13-  &
+0.110640382641573444321646222288733953d2/dnu**12+  &
+0.314506016053514813649312937550927984d0/dnu**11+  &
+0.121034803386729380112119800369995106d1/dnu**10-  &
+0.563886057975132122800400780925139408d-1/dnu**9-  &
+0.212150376664436198402886997526345737d0/dnu**8+  &
+0.187523130142550597749125290121189519d-1/dnu**7+  &
+0.688807631087481597255705323437096598d-1/dnu**6-  &
+0.145012132860522441527516910197283494d-1/dnu**5-  &
+0.552427172801990253438159657894413312d-1/dnu**4+  &
+0.44194173824159220275052772631553065d-1/dnu**3+  &
+0.35355339059327376220042218105242452d0/dnu**2+  &
+0.141421356237309504880168872420969808d1/dnu
+gammaratio = -gammaratio*sqrt(dnu) * sinval/cosval
+
+endif
+
+
+val        = 1.0d0/sqrt(pi) * cosval * gammaratio
+der        = 2.0d0/sqrt(pi) * sinval * 1.0d0/gammaratio
 
 end subroutine
-
-
-subroutine legezero(n,val)
-implicit double precision (a-h,o-z)
-
-!
-!  Approximate the value of the Legendre polynomial of order n at the 
-!  point 0 when n is large.
-!
-
-i = mod(n,4)
-
-if (i .eq. 0) dd = 1
-if (i .eq. 1) dd = 0
-if (i .eq. 2) dd = -1
-if (i .eq. 3) dd = 0
-
-dn  = n
-
-val = -1.9947114020071635q-1*(1/dn)**1.5q0+  &
-2.4933892525089543q-2*(1/dn)**2.5q0+  &
-3.116736565636193q-2*(1/dn)**3.5q0-  &
-8.181433484795006q-3*(1/dn)**4.5q0-  &
-3.886180905277628q-2*(1/dn)**5.5q0+  &
-1.0579859670069733q-2*(1/dn)**6.5q0+  &
-1.1969303265980789q-1*(1/dn)**7.5q0-  &
-3.1813864021737577q-2*(1/dn)**8.5q0-  &
-6.828657531754342q-1*(1/dn)**9.5q0+  &
-sqrt(1/dn)*sqrt(6.366197723675814q-1)
-
-val = dd * val 
-
-end subroutine
-
 
 
 subroutine lege0(n,x,pol)
@@ -119,10 +276,9 @@ subroutine qlegendre(t,val)
 implicit double precision (a-h,o-z)
 double precision, intent(in)   :: t
 double precision, intent(out)  :: val
-val = 0.5d0 + dlambda + dlambda**2 + 0.25d0 * (cos(t)/sin(t))**2
+
+val = 1.0d0/(1-t**2)**2 + dnu*(dnu+1)/(1-t**2)
 end subroutine
-
-
 
 end module
 
@@ -146,197 +302,90 @@ double precision, allocatable :: alphainv(:,:),alphainvp(:,:),abinv(:,:)
 double precision, allocatable :: alpha_coefs(:,:),alphainv_coefs(:,:),alphap_coefs(:,:)
 double precision, allocatable :: ts(:),vals(:),vals0(:),errs(:)
 
+print *,"Compute Legendre functions over [0,0.9]"
+print *,""
 
-
-call mach_zero(eps0)
+eps0 = epsilon(0.0d0)
 pi = acos(-1.0d0)
 
-norder   =  10**4
-dlambda  =  norder
+! norder   =  10**7          !!  the order for the Legendre polynomials
+! dnu      =  norder
 
-a        =  1.0d-15
-b        =  pi/2
 
-call prinl("before kummer_adap, norder = ",norder)
+write (*,"(A,A,A)")  "nu          ",  "time ","          error"
+
+do iii=0,20
+norder   = 2**iii
+dnu      = norder
+a        =  0.0d0
+b        =  0.9d0
 
 !
 !  Fetch the Chebyshev quadrature and related matrices.
 !
 
-eps    = 1.0d-14
+eps    = 1.0d-12
 k      = 16
 ifleft = 1
+nn     = 1000
 
 if (eps0 .lt. 1.0d-20) eps = 1.0d-20
-
 call chebexps(k,xscheb,whtscheb,ucheb,vcheb,chebintl,chebintr)
 
 
+call legen0(norder,val0,der0)
+
+
+! if ( mod(norder,2) == 0) then
+! val0 = sqrt(pi)*exp(-log_gamma(0.5d0-dnu/2)-log_gamma(1+dnu/2))
+! der0 = 0
+! else
+! val0 = 0
+! der0 = dnu*(dnu+1)/2*sqrt(pi)*exp(-log_gamma(1-dnu/2)-log_gamma(1.5d0+dnu/2))
+! endif
+
+
 !
-!  Construct the phase function and its inverse
+!  Average the time required to construt the phase functions and solve
+!  the IVP.
 !
 
 call elapsed(t1)
+do ii=1,nn
+
+!
+!  Construct the phase functions
+!
 call kummer_adap(eps,a,b,qlegendre,k,xscheb,chebintl,chebintr,ucheb, &
   nints,ab,alphap,alphapp)
-call elapsed(t2)
-t_phase = t2-t1
 
-
-call kummer_phase(ifleft,k,xscheb,chebintl,chebintr,ucheb, &
+call  kummer_phase(ifleft,k,xscheb,chebintl,chebintr,ucheb, &
    nints,ab,alpha,alphap,alphapp)
 
-call prini("after kummer_adap, nints = ",nints)
-call prin2("after kummer_adap, ab = ",ab)
-
-call kummer_phase_inverse(nints,ab,k,xscheb,chebintl,ucheb,alpha,alphap, &
-    nintsinv,abinv,alphainv,alphainvp)
-
 !
-!  Compute the coefficients c1 and c2 such that 
-!
-!   P_n(cos(t)) (sin(t))^(1/2) =  c1 sin ( alpha(t) + c2 ) (alpha'(t))^(-1/2)
+!  Solve the IVP
 !
 
-if (ifleft .eq. 1) then
-call legetayl(dlambda,a,ya,ypa)
-call kummer_coefs(ifleft,nints,ab,k,xscheb,alphap,alphapp,ya,ypa,c1,c2)
-else
-call legezero(norder,yb)
-call legezero(norder+1,ypb)
-ypb = -ypb*(norder+1)
-call kummer_coefs(ifleft,nints,ab,k,xscheb,alphap,alphapp,yb,ypb,c1,c2)
-endif
-
-
-call prind("after kummer_coefs, c1 = ",c1)
-call prind("after kummer_coefs, c2 = ",c2)
-
-
-!
-!  Compute coefficient expansions
-!
-
-allocate(alpha_coefs(k,nints),alphap_coefs(k,nints),alphainv_coefs(k,nintsinv))
-
-do int=1,nints
-alpha_coefs(:,int)  = matmul(ucheb,alpha(:,int))
-alphap_coefs(:,int) = matmul(ucheb,alphap(:,int))
+call kummer_coefs(ifleft,nints,ab,k,xscheb,alphap,alphapp,val0,der0,c1,c2)
 end do
 
-do int=1,nintsinv
-alphainv_coefs(:,int) = matmul(ucheb,alphainv(:,int))
-end do
-
-
-!
-!  Evaluate the solution at a collection of points in the interval [0,1]
-!  and compare the results with those obtained via the recurrence relation.
-!  Make sure the include points near 0 and points near 1.
-!
-
-nts = 200
-allocate(ts(nts),vals(nts),vals0(nts),errs(nts))
-call random_seed()
-
-do i=1,nts/2
-call random_number(ts(i))
-end do
-
-do i=1,nts/4
-call random_number(dd)
-ts(i+nts/2) = 1.0d0-exp(-15*dd)
-end do
-
-do i=1,nts/4
-call random_number(dd)
-ts(i+nts/2+nts/4) = exp(-30*dd)
-end do
-
-call insort0(nts,ts)
-
-call prind("ts=",ts)
-
-call elapsed(t1)
-do i=1,nts
-t = ts(i)
-call lege0(norder,t,vals0(i))
-end do
-call elapsed(t2)
-t_recurrence =  t2-t1
-
-
-call elapsed(t1)
-do i=1,nts
-t = ts(i)
-u = acos(t)
-
-
-call kummer_eval(nints,ab,k,xscheb,alpha,alphap,c1,c2,u,val)
-
-vals(i)     = val * (1-t**2)**(-0.25d0)
-end do
-call elapsed(t2)
-t_phase_eval =  t2-t1
-
-
-errs = abs(vals0-vals)
-
-
-call prin2("errs = ",errs)
-call prina("")
-
-call prin2("phase function time = ",t_phase)
-call prini("number of intervals = ",nints+nints2)
-call prin2("largest absolute error = ",maxval(errs))
-call prin2("evaluation via recurrence time =",t_recurrence)
-call prin2("evaluation via phase function time =",t_phase_eval)
-
-
-!
-!  Calculate the Gauss-Legendre quadrature rule of order norder.
-!
-
-call elapsed(t1)
-dsum = 0
-dmax = 0
-
-dd    = 2.0d0/c1**2
-
-!
-!  Construct the quadrature and report the time
-!
-
-call elapsed(t1)
-
-dmax = 0
-int1 = 1
-int2 = 1
-dsum = 0
-
-do i=1,norder/2
-
-xx = pi*i-c2
-call chebpw_eval20(nintsinv,abinv,k,alphainv_coefs,xx,root,int1)
-call chebpw_eval20(nints,ab,k,alphap_coefs,root,apval,int2)
-
-! call chebpw_eval0(nintsinv,abinv,k,xscheb,alphainv,xx,root,int1)
-! call chebpw_eval0(nints,ab,k,xscheb,alphap,root,apval,int2)
-
-x   = cos(root)
-wht = dd*sin(root)/apval
-dsum = dsum + 2*wht
-
-
-end do
 
 call elapsed(t2)
+t_phase = (t2-t1)/nn
 
-t_quad = (t2-t1)
+!
+!  Check the error of the Legendre function at the right-hand side
+!
 
-call prina("")
-call prind("sum of weights = ",dsum)
-call prin2("time for quadrature = ",2*t_quad)
+call kummer_eval(nints,ab,k,xscheb,alpha,alphap,c1,c2,b,val)
+val=val/sqrt(1-b**2)
+call lege0(norder,b,val0)
+derr = abs(val-val0)
+
+write (*,"(I10.10,D15.7,D15.7)")      norder,t_phase,derr
+
+end do
+
 
 
 end program
