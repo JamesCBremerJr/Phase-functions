@@ -1,10 +1,16 @@
-This package contains code for building nonoscillatory phase functions which represent
-solutions of second order differential equations.  It implements the windowing algorithm
-described in 
+This is a reference implementation of the algorithm described in 
 
-      "On the numerical solution of second order linear ordinary differential 
-      equations in the high-frequency regime"
-      James Bremer, arxiv:1409.6049
+      James Bremer "On the numerical solution of second order linear ordinary
+      differential equations in the high-frequency regime," Applied
+      and Computational Harmonic Analysis, 44 (2018), 312-349.
+
+It allows for the solution of a large class of second order linear ordinary
+differential equations in time independent of the frequency of oscillations
+of their solutions.
+
+Please note that this is an *unoptimized* implementation of the algorithm
+meant princpally to demonstrate that the algorithm is independent of frequency.
+There are a number of obvious inefficiencies.
 
 Each of the files which comprise this package is briefly described below.  
 More complete documentation can be found in the files themselves.    The principal routines 
