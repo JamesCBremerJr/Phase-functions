@@ -271,7 +271,7 @@ procedure(chebadapfun)                     :: fun
 
 double precision, allocatable :: ab0(:,:),ab1(:,:),vals(:),coefs(:),ts(:)
 
-nn = k/2
+nn      = 2
 
 ier     = 0
 maxints = 1000000
@@ -290,10 +290,10 @@ a0 = ab0(1,nints0)
 b0 = ab0(2,nints0)
 c0 = (a0+b0)/2
 
-if (b0-a0 .eq. 0) then
-ier = 1024
-return
-endif
+! if (b0-a0 .eq. 0) then
+! ier = 1024
+! return
+! endif
 
 nints0 = nints0-1
 

@@ -228,9 +228,9 @@ call qfun(s_c,s_val0)
 !  calculations are being performed in extended precision arithmetic.
 !
 
-if (eps0 .lt. 1.0d-20) then
-s_alpha      = 2d0*s_alpha
-endif
+! if (eps0 .lt. 1.0d-20) then
+! s_alpha      = 2d0*s_alpha
+! endif
 
 !
 !  Adptively discretize q.  
@@ -242,6 +242,7 @@ if (ier .ne. 0) then
 call prini("in kummer_adap, after chebadap, ier = ",ier)
 stop
 endif
+
 
 !
 !  Solve the windowed problem with the adaptive version of ode_solve_ivp on one
@@ -273,7 +274,7 @@ ypb = alphapp(k,nints0)
 
 !
 !  Solve the original problem, going backwards.
-!
+
 
 call ode_solve_tvp_adap(ier,eps,nints0,ab0,k,xscheb,chebintr,ucheb,nints,ab,  &
    alphap,alphapp,alphappp,odekummer,yb,ypb)

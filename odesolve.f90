@@ -366,7 +366,7 @@ end do
 
 dd1 = norm2(fs)
 
-if (isNaN(dd1)) exit
+!if (isNaN(dd1)) exit
 if( dd0 .le. dd1) exit
 
 
@@ -511,10 +511,10 @@ b0      = ab0(2,nints0)
 nints0  = nints0 - 1
 ts      = (b0+a0)/2 + (b0-a0)/2 * xscheb
 
-if (abs(b0-a0) .eq. 0) then
-ier = 1024
-return
-endif
+! if (abs(b0-a0) .eq. 0) then
+! ier = 1024
+! return
+! endif
 
 !
 !  Use the implicit trapezoidal method to construct an approximation
@@ -585,9 +585,9 @@ end do
 
 dd1 = norm2(fs)
 
-if (isNaN(dd1) .OR. dd0 .le. dd1) then
-exit
-endif
+! if (isNaN(dd1) .OR. dd0 .le. dd1) then
+! exit
+! endif
 
 dd0     = dd1
 yders0  = yders1
@@ -611,7 +611,7 @@ ys1     = ys0     + hs
 yders1  = yders0  + hders
 yder2s1 = yder2s0 + hder2s
 
-if (dd1 .eq. 0) exit
+if (norm2(abs(hs)) .lt. eps*norm2(abs(ys1))) exit
 
 end do
 
@@ -636,27 +636,22 @@ yder2s0 = yder2s1
 !  Compute the Chebyshev expansion for the solution
 !
 
-coefs0 = matmul(ucheb,ys0)
-coefs0 = coefs0/coefs0(1)
 
 
 !  relative Maxmimum value of trailing coefficients
 
-nn = k/2
+coefs0 = matmul(ucheb,ys0)
+coefs0 = coefs0/coefs0(1)
+nn     = 2
+dd     = maxval(abs(coefs0(k-nn+1:k)))
 
-! dd1   = sum(abs(coefs0(k-nn+1:k)))
-dd1   = maxval(abs(coefs0(k-nn+1:k)))
-! dd2   = maxval(abs(coefs0))+1
-! dd    = dd1/dd2
+!dd1   = sum(abs(coefs0(k-nn+1:k)))
 
-
-! dd  = dd1*(b0-a0)
-
-dd = dd1
 
 if (dd .gt. eps) then
 ifsplit = 1
 endif
+
 
 !
 !  We jump here if the decision to split has already been made
@@ -831,10 +826,6 @@ b0      = ab0(2,nints0)
 nints0  = nints0 - 1
 ts      = (b0+a0)/2 + (b0-a0)/2 * xscheb
 
-if (abs(b0 - a0) .eq. 0) then
-ier = 1024
-return
-endif
 
 
 !
@@ -897,7 +888,7 @@ fs(i)    = f-yder2s1(i)
 end do
 
 dd1 = norm2(fs)
-if (isNaN(dd1) .OR.  dd0 .le. dd1) exit
+! if (isNaN(dd1) .OR.  dd0 .le. dd1) exit
 
 dd0     = dd1
 ys0     = ys1
@@ -917,19 +908,20 @@ hders = 0
 
 call ode_linear_tvp(a0,b0,k,xscheb,chebintr,ps,qs,fs,hs,hders,hder2s)
 
+
+if (norm2(abs(hs)) .lt. eps*norm2(abs(ys1))) exit
+
 !
 !  Update the solution.
 !
+
 
 ys1     = ys0     + hs
 yders1  = yders0  + hders
 yder2s1 = yder2s0 + hder2s
 
-end do
 
-!
-!  If we did not perform even one Newton iteration, split the interval.
-!
+end do
 
 
 !
@@ -946,18 +938,10 @@ endif
 !
 
 
-
 coefs0 = matmul(ucheb,ys0)
 coefs0 = coefs0/coefs0(1)
-
-
-nn = k/2
-
-dd   = maxval(abs(coefs0(k-nn+1:k)))
-! dd2 = maxval(abs(coefs0))+1
-! dd  = dd1/dd2
-
-
+nn  = 2
+dd  = maxval(abs(coefs0(k-nn+1:k)))
 if (dd .gt. eps) then
 ifsplit = 1
 endif
@@ -1250,7 +1234,7 @@ end do
 !  Use a QR decomposition to invert the linear system
 !
 
- call qrsolv(amatr,k,sigma)
+call qrsolv(amatr,k,sigma)
 !call gesv(amatr,sigma)
 
 !
@@ -1311,7 +1295,8 @@ procedure (odefunction)       :: odefun
 !  
 
 ier      = 0
-maxiters = 25
+maxiters = 8
+eps      = 1.0d-13
 
 !
 !  Evaluate the second derivative at the left-hand endpoint of the interval.
@@ -1367,7 +1352,11 @@ y1    = y0 + h/2*(yp0+yp1)
 call odefun(t,y1,yp1,ypp1,dfdy,dfdyp)
 dd    = yp1 - yp0 - h/2*(ypp0+ypp1)
 
-if (abs(dd) .gt. abs(dd0))  exit
+
+if (abs(delta) .lt. eps*abs(yp1)) exit
+
+
+!if (abs(dd) .gt. abs(dd0))  exit
 
 end do
 
@@ -1424,7 +1413,8 @@ procedure (odefunction)       :: odefun
 !  
 
 ier        = 0
-maxiters   = 25
+maxiters   = 8
+eps        = 1.0d-13
 
 call odefun(ts(k),ys(k),yders(k),yder2s(k),dfdy,dfdyp)
 
@@ -1473,8 +1463,10 @@ yp0   = yp0 -delta
 y0    = y1 - h/2*(yp0+yp1)
 call odefun(t,y0,yp0,ypp0,dfdy,dfdyp)
 dd  = yp1 - yp0 - h/2*(ypp0+ypp1)
+!if (abs(dd) .gt. abs(dd0) .OR. abs(dd) .gt. abs(dd0)) exit
 
-if (abs(dd) .gt. abs(dd0) .OR. abs(dd) .gt. abs(dd0)) exit
+if (abs(delta) .lt. eps*abs(yp1)) exit
+
 
 end do
 end do
