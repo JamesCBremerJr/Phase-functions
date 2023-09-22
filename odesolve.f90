@@ -471,11 +471,13 @@ double precision, allocatable :: hs(:),hders(:),hder2s(:)
 
 ier = 0
 pi  = acos(-1.0d0)
+nn     = 2
+
 !
 !  Set algorithm parameters and allocate memory for the procedure.
 !
 
-maxiters = 25
+maxiters = 8
 maxints  = 1000000
 
 allocate(ts(k),ps(k),qs(k),fs(k),amatr(k,k),hs(k),hders(k),hder2s(k))
@@ -641,12 +643,10 @@ yder2s0 = yder2s1
 !  relative Maxmimum value of trailing coefficients
 
 coefs0 = matmul(ucheb,ys0)
-coefs0 = coefs0/coefs0(1)
-nn     = 2
-dd     = maxval(abs(coefs0(k-nn+1:k)))
-
-!dd1   = sum(abs(coefs0(k-nn+1:k)))
-
+coefs0 = abs(coefs0)
+dd1    = maxval(coefs0+1)
+dd2    = maxval(coefs0(k-nn+1:k))
+dd     = dd2/dd1
 
 if (dd .gt. eps) then
 ifsplit = 1
@@ -791,7 +791,8 @@ pi  = acos(-1.0d0)
 !
 
 maxints  = 1000000
-maxiters = 25
+maxiters = 8
+nn       = 2
 
 allocate(ts(k),ps(k),qs(k),fs(k),amatr(k,k),hs(k),hders(k),hder2s(k))
 allocate(ab0(2,maxints))
@@ -826,13 +827,10 @@ b0      = ab0(2,nints0)
 nints0  = nints0 - 1
 ts      = (b0+a0)/2 + (b0-a0)/2 * xscheb
 
-
-
 !
 !  Use the  implicit trapezoidal method procedure to construct an appropriate initial
 !  approximation.
 !
-
 
 if (nintsout .eq. 0) then
 ys1(k)    = yb
@@ -841,7 +839,6 @@ else
 ys1(k)    = ysout(1,nintsout)
 yders1(k) = ydersout(1,nintsout)
 endif
-
 
 call ode_trap_tvp(ier,k,ts,odefun,ys1,yders1,yder2s1)
 if (ier .ne. 0) then
@@ -909,7 +906,7 @@ hders = 0
 call ode_linear_tvp(a0,b0,k,xscheb,chebintr,ps,qs,fs,hs,hders,hder2s)
 
 
-if (norm2(abs(hs)) .lt. eps*norm2(abs(ys1))) exit
+!if (norm2(abs(hs)) .lt. eps*norm2(abs(ys1))) exit
 
 !
 !  Update the solution.
@@ -937,11 +934,12 @@ endif
 !  Compute the Chebyshev expansion for the solution
 !
 
-
 coefs0 = matmul(ucheb,ys0)
-coefs0 = coefs0/coefs0(1)
-nn  = 2
-dd  = maxval(abs(coefs0(k-nn+1:k)))
+coefs0 = abs(coefs0)
+dd1    = maxval(coefs0)+1
+dd2    = maxval(coefs0(k-nn+1:k))
+dd     = dd2/dd1
+
 if (dd .gt. eps) then
 ifsplit = 1
 endif

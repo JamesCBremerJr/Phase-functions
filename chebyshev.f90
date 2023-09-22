@@ -271,10 +271,9 @@ procedure(chebadapfun)                     :: fun
 
 double precision, allocatable :: ab0(:,:),ab1(:,:),vals(:),coefs(:),ts(:)
 
-nn      = 2
-
 ier     = 0
 maxints = 1000000
+nn      = 2
 
 allocate(ab0(2,maxints),ab1(2,maxints),vals(k),coefs(k),ts(k))
 
@@ -306,7 +305,6 @@ ts = xs*(b0-a0)/2 + (b0+a0)/2
 do i=1,k
 call fun(ts(i),vals(i))
 end do
-
 
 coefs = matmul(u,vals)
 
