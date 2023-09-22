@@ -4,7 +4,7 @@ CPPCOMP  = g++
 CPPOPTS  = -O3
 
 FCOMP    = gfortran
-FOPTS    = -O3
+FOPTS    = -Ofast -march=native -fexternal-blas -llapack -lblas
 
 LDOPT =
 
