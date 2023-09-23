@@ -375,7 +375,7 @@ call ode_solve_ivp_adap(ier,eps,nintsin,abin,k,xscheb,chebintl,ucheb,nints2,ab2,
 call chebpw_eval(nints2,ab2,k,xscheb,ys,b,val0)
 call kummer_eval(nints,ab,k,xscheb,alpha,alphap,c1,c2,b,val)
 
-val0 = vals000(iii)
+! val0 = vals000(iii)
 derr = abs(val-val0)
 
 write (*,"(D15.7,D15.7,D15.7)")      dnu,t_phase,derr
