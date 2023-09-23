@@ -227,6 +227,13 @@ nn     = 1000
 
 
 
+iw2 = 201
+open(iw2,FILE="leg.tex")
+
+iw3 = 301
+open(iw3,FILE="other.tex")
+
+
 
 !
 !  Fetch the Chebyshev quadrature and related matrices.
@@ -235,35 +242,35 @@ nn     = 1000
 call chebexps(k,xscheb,whtscheb,ucheb,vcheb,chebintl,chebintr)
 
 
-! if (eps0 .lt. 1.0d-16) then
-! iw = 101
-! open(iw,FILE="sol.dat")
-! do ii=0,20
-! a         = -1
-! b         =  1
-! dnu       = 2**ii
-! nintsin   = 1
-! abin(1,1) = a
-! abin(2,1) = b
-! val0      = 1
-! der0      = dnu
-! eps       = 1.0d-15
+if (eps0 .lt. 1.0d-16) then
+iw = 101
+open(iw,FILE="sol.dat")
+do ii=0,20
+a         = -1
+b         =  1
+dnu       = 2**ii
+nintsin   = 1
+abin(1,1) = a
+abin(2,1) = b
+val0      = 1
+der0      = dnu
+eps       = 1.0d-15
 
-! call ode_solve_ivp_adap(ier,eps,nintsin,abin,k,xscheb,chebintl,ucheb,nints2,ab2,  &
-!    ys,yders,yder2s,odetest,val0,der0)
-! call chebpw_eval(nints2,ab2,k,xscheb,ys,b,val)
-! write (iw,"(F44.36)") val
-! end do
-! stop
-! else
-! iw = 101
-! open(iw,FILE="sol.dat")
-! allocate(vals000(21))
-! do ii=0,20
-! read (iw,"(F44.36)") vals000(ii)
-! end do
+call ode_solve_ivp_adap(ier,eps,nintsin,abin,k,xscheb,chebintl,ucheb,nints2,ab2,  &
+   ys,yders,yder2s,odetest,val0,der0)
+call chebpw_eval(nints2,ab2,k,xscheb,ys,b,val)
+write (iw,"(F44.36)") val
+end do
+stop
+else
+iw = 101
+open(iw,FILE="sol.dat")
+allocate(vals000(21))
+do ii=0,20
+read (iw,"(F44.36)") vals000(ii)
+end do
 
-! endif
+endif
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! LEGENDRe
@@ -318,7 +325,14 @@ derr = abs(val-val0)
 
 write (*,"(I10.10,D15.7,D15.7)")      norder,t_phase,derr
 
+! call  write_table_integer_power2(iw2,iii)
+! call write_table_next(iw2)
+! call write_table_double(iw2,t_phase)
+! call write_table_next(iw2)
+! call write_table_double(iw2,derr)
+! call write_table_nextline(iw2)
 end do
+
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -369,16 +383,24 @@ nintsin   = 1
 abin(1,1) = a
 abin(2,1) = b
 
-call ode_solve_ivp_adap(ier,eps,nintsin,abin,k,xscheb,chebintl,ucheb,nints2,ab2,  &
-   ys,yders,yder2s,odetest,val0,der0)
+! call ode_solve_ivp_adap(ier,eps,nintsin,abin,k,xscheb,chebintl,ucheb,nints2,ab2,  &
+!    ys,yders,yder2s,odetest,val0,der0)
 
-call chebpw_eval(nints2,ab2,k,xscheb,ys,b,val0)
+! call chebpw_eval(nints2,ab2,k,xscheb,ys,b,val0)
 call kummer_eval(nints,ab,k,xscheb,alpha,alphap,c1,c2,b,val)
 
-! val0 = vals000(iii)
+val0 = vals000(iii)
 derr = abs(val-val0)
 
 write (*,"(D15.7,D15.7,D15.7)")      dnu,t_phase,derr
+
+! call  write_table_integer_power2(iw3,iii)
+! call write_table_next(iw3)
+! call write_table_double(iw3,t_phase)
+! call write_table_next(iw3)
+! call write_table_double(iw3,derr)
+! call write_table_nextline(iw3)
+
 
 end do
 
