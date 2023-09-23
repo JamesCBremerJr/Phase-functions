@@ -113,7 +113,7 @@ double precision, allocatable :: hs(:),hders(:),hder2s(:)
 double precision, allocatable :: ys0(:),yders0(:),yder2s0(:)
 
 ier      = 0
-maxiters = 25
+maxiters = 4
 
 !
 !  Set algorithm parameters and allocate memory for the procedure.
@@ -289,7 +289,7 @@ double precision, allocatable :: ys0(:),yders0(:),yder2s0(:)
 !  Set algorithm parameters and allocate memory for the procedure.
 !
 
-maxiters = 25
+maxiters = 4
 
 allocate(ts(k),ps(k),qs(k),fs(k),amatr(k,k),hs(k),hders(k),hder2s(k))
 allocate(ys0(k),yders0(k),yder2s0(k))
@@ -477,8 +477,8 @@ nn     = 2
 !  Set algorithm parameters and allocate memory for the procedure.
 !
 
-maxiters = 8
-maxints  = 1000000
+maxiters = 4
+maxints  = 2000000
 
 allocate(ts(k),ps(k),qs(k),fs(k),amatr(k,k),hs(k),hders(k),hder2s(k))
 allocate(ab0(2,maxints))
@@ -790,8 +790,8 @@ pi  = acos(-1.0d0)
 !  Set algorithm parameters and allocate memory for the procedure.
 !
 
-maxints  = 1000000
-maxiters = 8
+maxints  = 2000000
+maxiters = 4
 nn       = 2
 
 allocate(ts(k),ps(k),qs(k),fs(k),amatr(k,k),hs(k),hders(k),hder2s(k))
@@ -1293,7 +1293,7 @@ procedure (odefunction)       :: odefun
 !  
 
 ier      = 0
-maxiters = 8
+maxiters = 4
 eps      = 1.0d-13
 
 !
@@ -1411,7 +1411,7 @@ procedure (odefunction)       :: odefun
 !  
 
 ier        = 0
-maxiters   = 8
+maxiters   = 4
 eps        = 1.0d-13
 
 call odefun(ts(k),ys(k),yders(k),yder2s(k),dfdy,dfdyp)
