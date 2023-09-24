@@ -12,6 +12,20 @@ Please note that this is an *unoptimized* implementation of the algorithm
 meant princpally to demonstrate that the algorithm is independent of frequency.
 There are a number of obvious inefficiencies.
 
+An improved and more general version of the method for second order
+equations whose coefficients are positive, negative and change signs
+can be found in 
+
+      James Bremer "Phase function methods for second order linear ordinary
+      differential equations with turning points," Applied
+      and Computational Harmonic Analysis, 65 (2023), 137-169.
+
+A new, potentially faster, method for computing phase functions for nth
+order scalar equations is described in 
+
+      Murdock Aubrey and James Bremer, "The Levin approach to the numerical 
+      calculation of phase functions."  arXiv:2308.03288.
+
 Each of the files which comprise this package is briefly described below.  
 More complete documentation can be found in the files themselves.    The principal routines 
 for constructing nonoscillatory phase functions are located in the file kummer.f90.
